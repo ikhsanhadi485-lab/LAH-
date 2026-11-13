@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUIS BERHADIAH</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+
+        body {
+            background: linear-gradient(135deg, #ffc3a0 0%, #ffafbd 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            color: #4a4a4a;
+            overflow-x: hidden;
+        }
+
+        #game-container {
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%;
+            max-width: 480px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 117, 140, 0.3);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(255, 77, 109, 0.1);
+        }
+
+        .subtitle {
+            color: #ff758c;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Game Screen */
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #ffe6e9;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff4d6d;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .category-tag {
+            background: #ffecf0;
+            color: #ff4d6d;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 800;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .clue-box {
+            background: #fff0f3;
+            border-left: 4px solid #ff758c;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            font-style: italic;
+            color: #c9184a;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #4a4a4a;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: #ffe6e9;
+            border-color: #ff758c;
+        }
+        
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .option-btn.correct {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+
+        .option-btn.wrong {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+
+        .feedback-box {
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
+            animation: fadeIn 0.3s;
+        }
+
+        .feedback-box.correct {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .feedback-box.wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Result Screen */
+        .heart-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+            animation: beat 1s infinite alternate;
+        }
+
+        .score-display {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+        }
+
+        .message-box {
+            background: #fff0f3;
+            padding: 25px;
+            border-radius: 20px;
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #5a2e34;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(255, 117, 140, 0.1);
+        }
+
+        .romantic-text {
+            font-style: italic;
+            font-weight: 600;
+            color: #c9184a;
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.15); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- SCREEN 1: WELCOME -->
+        <div id="welcome-screen" class="fade-in">
+            <div class="heart-icon" style="animation:none; transform: scale(1);">💌</div>
+            <h1>Love Quest</h1>
+            <p class="subtitle">Main tebak-tebakan santai yok!<br>Ada MC LAREN nungguin klo bisa menang di akhir game.</p>
+            <button class="btn" onclick="startGame()">Mulai Main 🎮</button>
+        </div>
+
+        <!-- SCREEN 2: GAMEPLAY -->
+        <div id="game-screen" class="hidden fade-in">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="category-tag" id="category-tag">Kategori</div>
+            <div class="question-text" id="question-text">Pertanyaan akan muncul di sini...</div>
+            <div class="clue-box" id="clue-box">Clue: -</div>
+            
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected via JS -->
+            </div>
+
+            <div id="feedback-area" class="hidden"></div>
+
+            <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Lanjut ➔</button>
+        </div>
+
+        <!-- SCREEN 3: RESULT -->
+        <div id="result-screen" class="hidden fade-in">
+            <div class="heart-icon">💖</div>
+            <h2>Misi Selesai!</h2>
+            <div class="score-display" id="score-display">Skor Kamu: 0/10</div>
+            <div class="message-box" id="message-box">
+                <!-- Message injected via JS -->
+            </div>
+            <button class="btn" onclick="location.reload()">Main Lagi 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const gameData = [
+            {
+                type: "Sejarah & Fakta Unik",
+                q: "Monumen megah di India yang dibangun Kaisar Shah Jahan sebagai bukti cinta abadinya untuk sang istri adalah...",
+                clue: "Bangunannya cantik, tpi lebih cantik Dea sih.",
+                opts: ["Candi Borobudur", "Menara Eiffel", "Taj Mahal", "Colosseum"],
+                ans: 2,
+                fact: "Jawabannya Taj Mahal! Kaisar Shah Jahan membangun ini di abad ke-17 untuk mengenang istrinya, Mumtaz Mahal. Cinta sejati banget kan?"
+            },
+            {
+                type: "Sejarah & Fakta Unik",
+                q: "Siapakah penemu bola lampu pijar praktis yang bikin malam di dunia nggak gelap lagi?",
+                clue: "Dia nerangin dunia, kalau Dea nerangin hatiku wkwkw.",
+                opts: ["Thomas Alva Edison", "Albert Einstein", "Isaac Newton", "Nikola Tesla"],
+                ans: 0,
+                fact: "Thomas Alva Edison! Meskipun bukan orang pertama yang bikin lampu, tapi dia yang berhasil bikin versi komersial yang tahan lama di tahun 1879."
+            },
+            {
+                type: "Sejarah & Fakta Unik",
+                q: "Ada hewan laut yang kalau tidur suka berpegangan tangan biar nggak hanyut terbawa arus. Hewan apakah itu?",
+                clue: "ada di laut.",
+                opts: ["Lumba-lumba", "Berang-berang laut", "Anjing Laut", "Pinguin"],
+                ans: 1,
+                fact: "Ituu diyakkh, Berang-berang laut (Sea Otters)! Mereka suka gandengan tangan pas tidur biar nggak misah dari kelompoknya. *Sweet* banget ya!"
+            },
+            {
+                type: "Sejarah & Fakta Unik",
+                q: "Kalau darah manusia warnanya merah, gurita punya darah warna apa hayo?",
+                clue: "Biarpun darahnya beda, janji cintaku ke kamu tetap merah merona, Anjayy.",
+                opts: ["Ungu", "Hijau", "Merah muda", "Biru"],
+                ans: 3,
+                fact: "Jawaban yang benar itu Biru! Darah gurita mengandung protein *hemocyanin* yang kaya tembaga, makanya warnanya biru."
+            },
+            {
+                type: "Sejarah & Fakta Unik",
+                q: "Perang terpendek dalam sejarah (Inggris vs Zanzibar) ternyata cuma berlangsung sebentar Kali! Berapa lama menurutmu durasinya?",
+                clue: "Perangnya Cepet kali, masih lebih lama aku nungguinmu.",
+                opts: ["38 menit", "3 hari", "2 jam", "1 minggu"],
+                ans: 0,
+                fact: "Cuma 38 sampai 45 menit aja! Terjadi tanggal 27 Agustus 1896, dan Zanzibar langsung menyerah."
+            },
+            {
+                type: "Berpikir secara logika",
+                q: "Ada 10 burung gagak hinggap di pohon. Kalau 1 ditembak pemburu dan jatuh, sisa berapa burung di pohon?",
+                clue: "Pikirin secara logika.",
+                opts: ["9 burung", "1 burung", "Sisa 0", "10 burung"],
+                ans: 2,
+                fact: "Jawabannya Sisa 0 lah! Karena burung yang lain pasti terbang denger suara pemburu yang keras."
+            },
+            {
+                type: "Berpikir secara logika",
+                q: "Bayangkan kapas 1 kg dan balok besi 1 kg jatuh dari meja ke jari kaki. Mana yang jatuhnya lebih sakit?",
+                clue: "tapi lebih sakit yang kemarin siii.",
+                opts: ["Lebih sakit besi", "Lebih sakit kapas", "Sama-sama sakit", "Sakit kakinya dong!"],
+                ans: 3,
+                fact: "Ya pasti sakit jari kakinya! Nggak peduli kapas atau besi, dua-duanya beratnya 1 kg nimpa kaki kamu :)."
+            },
+            {
+                type: "Berpikir secara logika",
+                q: "Pintu apakah yang biarpun nggak dikunci, tetap nggak bakal kebuka walau kamu dorong sekuat tenaga?",
+                clue: "Gak usah dipaksa dorong, biar pelan-pelan aku aja yang buka pintu hatimu.",
+                opts: ["Pintu besi", "Pintu geser (tarik)", "Pintu rusak", "Pintu ajaib"],
+                ans: 1,
+                fact: "Pintu geser atau pintu tarik! Mau didorong sampai kiamat juga nggak bakal kebuka, soalnya kan harus digeser atau ditarik, hehe."
+            },
+            {
+                type: "Misi Spesial",
+                q: "Pertanyaan super penting: Kapan hari paling bersejarah di mana sosok luar biasa Kayak Aku ini turun ke bumi?",
+                clue: "Tanggal nya mirip kayak ulang tahun istri soeharto, ibu tien soeharto!",
+                opts: ["19 Juni 2006", "17 Juli 2006", "19 Agustus 2006", "19 Juli 2006"],
+                ans: 3,
+                fact: "19 Juli 2006! kalau sampek lupa jugak, dahlah gak kawan."
+            },
+            {
+                type: "Misi Spesial",
+                q: "Pada tanggal berapakah Bapak Presiden Prabowo Subianto dilahirkan?",
+                clue: "wkwkwkw",
+                opts: ["17 Oktober 1951", "17 Agustus 1945", "17 September 1951", "10 Oktober 1950"],
+                ans: 0,
+                fact: "Jawabannya 17 Oktober 1951. HIDUPP JOKOWIII!"
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        function startGame() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = gameData[currentIndex];
+            answered = false;
+            
+            // Update UI
+            document.getElementById('progress-fill').style.width = `${((currentIndex) / gameData.length) * 100}%`;
+            document.getElementById('category-tag').innerText = `Level ${currentIndex + 1}: ${q.type}`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('clue-box').innerText = `✨ Clue: ${q.clue}`;
+            
+            document.getElementById('feedback-area').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            // Render Options
+            const optsContainer = document.getElementById('options-grid');
+            optsContainer.innerHTML = '';
+            q.opts.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = () => selectOption(index, btn, q.ans, q.fact);
+                optsContainer.appendChild(btn);
+            });
+
+            // Trigger animation
+            const gameScreen = document.getElementById('game-screen');
+            gameScreen.classList.remove('fade-in');
+            void gameScreen.offsetWidth; // trigger reflow
+            gameScreen.classList.add('fade-in');
+        }
+
+        function selectOption(selectedIndex, btnElement, correctIndex, factText) {
+            if (answered) return; // Prevent multiple clicks
+            answered = true;
+
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            // Disable all buttons
+            buttons.forEach(b => b.disabled = true);
+
+            const feedbackArea = document.getElementById('feedback-area');
+            feedbackArea.classList.remove('hidden');
+
+            if (selectedIndex === correctIndex) {
+                // Correct Answer
+                score++;
+                btnElement.classList.add('correct');
+                feedbackArea.className = 'feedback-box correct';
+                feedbackArea.innerHTML = `<strong>Yeay Benar! 🎉</strong><br>${factText}`;
+            } else {
+                // Wrong Answer
+                btnElement.classList.add('wrong');
+                buttons[correctIndex].classList.add('correct'); // Show correct answer
+                feedbackArea.className = 'feedback-box wrong';
+                feedbackArea.innerHTML = `<strong>Ups, kurang tepat! 😅</strong><br>Jawaban yang benar adalah <strong>${gameData[currentIndex].opts[correctIndex]}</strong>.<br><br><em>Info: ${factText}</em>`;
+            }
+
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < gameData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            const scoreDisplay = document.getElementById('score-display');
+            const messageBox = document.getElementById('message-box');
+            
+            scoreDisplay.innerText = `Skor Kamu: ${score} / 10`;
+
+            if (score >= 8) {
+                // Score 8, 9, 10
+                messageBox.innerHTML = `
+                    <p>WOW! Jenius banget! 😍</p>
+                    <p>Skor setinggi ini ngebuktiin kalau kamu memang luar biasa, persis seperti yang selalu aku bayangkan.</p>
+                    <div class="romantic-text" style="font-size: 1.1em;">
+                        "Setiap jawaban benarmu bikin aku makin sadar... aku beruntung banget bisa kenal orang sepertimu. Sama kayak kepastianmu menjawab game ini, perasaanku ke kamu juga udah pasti. Terima kasih sudah terlahir di dunia ini pada 19 Juli 2006. <strong>I love you more than words can say.</strong> 💖"
+                    </div>
+                `;
+            } else if (score >= 6) {
+                // Score 6, 7
+                messageBox.innerHTML = `
+                    <p>Skormu lumayan bagus! Keren deh! ✨</p>
+                    <p>Tapi jangan puas dulu ya, kamu harus tetap rajin belajar dan banyak cari tahu hal-hal baru. Biar makin pintar!</p>
+                    <div class="romantic-text">
+                        "Terus semangat belajarnya ya, Sayang! Nggak apa-apa kok belum sempurna, karena yang sempurna itu cuma perasaanku ke kamu. Hehe. Semangat terus belajarnya, aku bakal selalu ada buat dukung kamu! 🥰"
+                    </div>
+                `;
+            } else {
+                // Score 0-5
+                messageBox.innerHTML = `
+                    <p>Waduh, kayanya kamu harus banyaaak banget belajar nih ke aku! 😂</p>
+                    <p>Skormu di bawah rata-rata nih, hayo kurang fokus ya? Pasti gara-gara kebanyakan mikirin aku kan pas jawab?</p>
+                    <div class="romantic-text">
+                        "Nggak apa-apa skornya kecil, kan ini cuma game. Kalau urusan hati, nilaimu tetap seratus kok! Sini, kalau ada yang nggak ngerti tanya aja ke aku, anggap aja aku guru pribadimu. Yuk belajar bareng (sekalian belajar mencintai satu sama lain)! 😘"
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
